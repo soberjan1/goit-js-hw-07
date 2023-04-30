@@ -20,18 +20,28 @@ const addGalleryItems = galleryItems
   .join("");
 galleryItemsEl.insertAdjacentHTML("afterbegin", addGalleryItems);
 
-// ДИЛЕГИРОВАНИЕ
-galleryItemsEl.addEventListener("click", bigImg);
-function bigImg(evt) {
+// ДИЛЕГИРОВАНИЕ // БИБЛИОТЕКА basiclightbox
+galleryItemsEl.addEventListener("click", onGalleryItemClick);
+function onGalleryItemClick(evt) {
   evt.preventDefault();
-  if (evt.target.classList.contains(".gallery__image")) {
-    return evt.tagret.dataset.source;
+  const imgSrc = evt.target.parentNode.href;
+  const imgAlt = evt.target.alt;
+
+  if (evt.target.nodeName !== "IMG") {
+    return;
   }
+
+  const instance = basicLightbox.create(
+    `<img src="${imgSrc}" alt="${imgAlt}">`
+  );
+  instance.show();
+
+  galleryItemsEl.addEventListener("keydown", (evt) => {
+    const visible = basicLightbox.visible();
+    if (visible === true && evt.code === "Escape") {
+      instance.close();
+    }
+  });
 }
 
-// БИБЛИОТЕКА basiclightbox
-const instance = basicLightbox.create(`
-    <img src="${evt.tagret.dataset.source}" width="800" height="600">
-`);
-
-instance.show();
+// ЗАКРЫТИЕ ПО ESCP
