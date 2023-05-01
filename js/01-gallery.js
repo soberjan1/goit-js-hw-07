@@ -32,16 +32,26 @@ function onGalleryItemClick(evt) {
   }
 
   const instance = basicLightbox.create(
-    `<img src="${imgSrc}" alt="${imgAlt}">`
-  );
-  instance.show();
+    `<img src="${imgSrc}" alt="${imgAlt}">`,
 
-  galleryItemsEl.addEventListener("keydown", (evt) => {
-    const visible = basicLightbox.visible();
-    if (visible === true && evt.code === "Escape") {
+    {
+      onShow: (instance) => {
+        document.addEventListener("keydown", closeModal);
+      },
+
+      onClose: (instance) => {
+        document.removeEventListener("keydown", closeModal);
+      },
+    }
+  );
+
+  function closeModal(evt) {
+    if (evt.code === "Escape") {
       instance.close();
     }
-  });
+  }
+
+  instance.show();
 }
 
 // ЗАКРЫТИЕ ПО ESCP
